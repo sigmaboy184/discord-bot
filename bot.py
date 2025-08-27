@@ -1,10 +1,10 @@
+import os
+
 import discord
 from discord.ext import commands
 from discord.ui import View, Button
 
-# wczytaj token z pliku token.txt
-with open("token.txt", "r") as f:
-    TOKEN = f.read().strip()
+TOKEN = os.getenv("DISCORD_TOKEN"
 
 intents = discord.Intents.default()
 intents.members = True
