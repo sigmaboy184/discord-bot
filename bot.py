@@ -1,8 +1,33 @@
-import os
+# ---- KEEP ALIVE ----
+from flask import Flask
+import threading
 
+app = Flask('')
+
+from flask import Flask
+import threading
+
+app = Flask('')
+
+@app.route('/')
+def home():
+    return "Bot is running!"
+
+def run():
+    import os
+    port = int(os.environ.get("PORT", 8080))
+    app.run(host='0.0.0.0', port=port)
+
+threading.Thread(target=run).start()
+# ---- END KEEP ALIVE ----
+
+import os
 import discord
 from discord.ext import commands
 from discord.ui import View, Button
+import asyncio
+
+
 
 TOKEN = os.getenv("DISCORD_TOKEN")
 
@@ -13,6 +38,7 @@ intents.messages = True
 intents.message_content = True
 
 bot = commands.Bot(command_prefix="!", intents=intents)
+
 
 kanal_owner = {}
 
