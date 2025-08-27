@@ -25,24 +25,48 @@ class KanalMaxView(View):
 @bot.event
 async def on_ready():
     print(f"Zalogowano jako {bot.user}")
+import asyncio
 
 @bot.event
 async def on_interaction(interaction: discord.Interaction):
     if interaction.type == discord.InteractionType.component:
         if interaction.data["custom_id"].startswith("max_"):
-            max_osob = int(interaction.data["custom_id"].split("_")[1])
-            guild = interaction.guild
-            user = interaction.user
-            channel = await guild.create_voice_channel(
-                name=f"{user.display_name}'s kanał ({max_osob})",
-                user_limit=max_osob
-            )
-            kanal_owner[channel.id] = user.id
-            await interaction.response.send_message(
-                f"✅ Stworzyłem kanał `{channel.name}` z limitem **{max_osob} osób**.\n"
-                f"👑 Właściciel: {user.mention}",
-                ephemeral=True
-            )
+            try:
+                max_osob = int(interaction.data["custom_id"].split("_")[1])
+                guild = interaction.guild
+                user = interaction.user
+
+                print(f"[INFO] Próba utworzenia kanału dla {user} z limitem {max_osob}")
+                
+                category = guild.get_channel(1409961024903319650)  # ID kategorii
+
+
+                channel = await guild.create_voice_channel(
+                    name=f"{user.display_name}'s kanał ({max_osob})",
+                    user_limit=max_osob
+                    category=category            
+                )
+
+                kanal_owner[channel.id] = user.id
+
+                await interaction.response.send_message(
+                    f"✅ Stworzyłem kanał `{channel.name}` z limitem **{max_osob} osób**.\n👑 Właściciel: {user.mention}",
+                    ephemeral=False
+                )
+
+                print(f"[OK] Utworzono kanał: {channel.name} (ID: {channel.id})")
+
+                # usuwanie wiadomości po 10 sekundach
+                msg = await interaction.original_response()
+                await asyncio.sleep(10)
+                await msg.delete()
+
+            except Exception as e:
+                print(f"[BŁĄD] Nie udało się stworzyć kanału: {e}")
+                await interaction.response.send_message(
+                    f"⚠️ Wystąpił błąd przy tworzeniu kanału: `{e}`",
+                    ephemeral=True
+                )
 
 @bot.event
 async def on_voice_state_update(member, before, after):
