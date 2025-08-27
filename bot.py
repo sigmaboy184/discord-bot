@@ -44,7 +44,7 @@ async def on_interaction(interaction: discord.Interaction):
                 channel = await guild.create_voice_channel(
                     name=f"{user.display_name}'s kanał ({max_osob})",
                     user_limit=max_osob
-                    category=category            
+                    category=categor           
                 )
 
                 kanal_owner[channel.id] = user.id
